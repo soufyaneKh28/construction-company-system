@@ -19,6 +19,7 @@ const mockProjects = [
     budget: 4500000,
     spent: 2850000,
     location: "Algiers, Algeria",
+    image: "/luxury-villa-construction-site-with-modern-archite.png",
     phases: [
       { name: "Foundation", status: "completed", progress: 100 },
       { name: "Structure", status: "in-progress", progress: 75 },
@@ -40,6 +41,7 @@ const mockProjects = [
     budget: 8200000,
     spent: 1230000,
     location: "Oran, Algeria",
+    image: "/modern-office-building-construction-site-with-stee.png",
     phases: [
       { name: "Planning", status: "in-progress", progress: 60 },
       { name: "Foundation", status: "pending", progress: 0 },
@@ -61,6 +63,7 @@ const mockProjects = [
     budget: 2800000,
     spent: 1260000,
     location: "Constantine, Algeria",
+    image: "/highway-bridge-construction-with-concrete-pillars-.png",
     phases: [
       { name: "Assessment", status: "completed", progress: 100 },
       { name: "Demolition", status: "completed", progress: 100 },
@@ -86,6 +89,7 @@ const mockProjects = [
     clientRating: 5,
     profitMargin: 1.6,
     location: "Annaba, Algeria",
+    image: "/modern-renovated-shopping-mall-interior-with-glass.png",
     phases: [
       { name: "Design", status: "completed", progress: 100 },
       { name: "Demolition", status: "completed", progress: 100 },
@@ -112,6 +116,7 @@ const mockProjects = [
     clientRating: 4,
     profitMargin: 2.2,
     location: "Tlemcen, Algeria",
+    image: "/completed-residential-apartment-complex-with-moder.png",
     phases: [
       { name: "Site Preparation", status: "completed", progress: 100 },
       { name: "Foundation", status: "completed", progress: 100 },
@@ -138,6 +143,7 @@ const mockProjects = [
     clientRating: 5,
     profitMargin: 5.0,
     location: "Setif, Algeria",
+    image: "/large-industrial-warehouse-with-steel-structure-an.png",
     phases: [
       { name: "Ground Work", status: "completed", progress: 100 },
       { name: "Steel Structure", status: "completed", progress: 100 },
@@ -164,6 +170,7 @@ const mockProjects = [
     clientRating: 4,
     profitMargin: 2.8,
     location: "Batna, Algeria",
+    image: "/renovated-school-building-with-modern-classrooms-a.png",
     phases: [
       { name: "Assessment", status: "completed", progress: 100 },
       { name: "Structural Repairs", status: "completed", progress: 100 },
@@ -185,13 +192,15 @@ interface ProjectsListProps {
     year: string
     status: string
   }
+  projects?: any[]
+  onProjectsChange?: (projects: any[]) => void
 }
 
-export function ProjectsList({ activeTab, filters }: ProjectsListProps) {
+export function ProjectsList({ activeTab, filters, projects = mockProjects, onProjectsChange }: ProjectsListProps) {
   const [selectedProject, setSelectedProject] = useState<any>(null)
 
   // Filter projects based on active tab and filters
-  const filteredProjects = mockProjects.filter((project) => {
+  const filteredProjects = projects.filter((project) => {
     // Filter by tab
     if (activeTab === "active" && project.status === "completed") return false
     if (activeTab === "archived" && project.status !== "completed") return false
@@ -206,7 +215,7 @@ export function ProjectsList({ activeTab, filters }: ProjectsListProps) {
     return true
   })
 
-  const archiveStats = mockProjects
+  const archiveStats = projects
     .filter((p) => p.status === "completed")
     .reduce(
       (acc, project) => {

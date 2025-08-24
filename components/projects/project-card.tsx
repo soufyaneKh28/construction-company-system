@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Calendar, MapPin, DollarSign, Users, Star, TrendingUp, CheckCircle } from "lucide-react"
+import Image from "next/image"
 
 interface ProjectCardProps {
   project: {
@@ -19,6 +20,7 @@ interface ProjectCardProps {
     spent: number
     location: string
     workers: string[]
+    image?: string
     completedDate?: string
     finalCost?: number
     clientRating?: number
@@ -63,20 +65,37 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
   const isArchived = project.status === "completed"
 
   return (
-    <Card className="hover:shadow-lg transition-all cursor-pointer group" onClick={onClick}>
+    <Card className="hover:shadow-lg transition-all cursor-pointer group overflow-hidden" onClick={onClick}>
+      {project.image && (
+        <div className="relative h-48 w-full overflow-hidden">
+          <Image
+            src={project.image || "/placeholder.svg"}
+            alt={`${project.name} construction site`}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          <Badge className={`absolute top-3 right-3 ${getStatusColor(project.status)}`} variant="outline">
+            {project.status.replace("-", " ")}
+          </Badge>
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <CardTitle className="text-lg font-serif group-hover:text-primary transition-colors">
             {project.name}
           </CardTitle>
-          <Badge className={getStatusColor(project.status)} variant="outline">
-            {project.status.replace("-", " ")}
-          </Badge>
+          {!project.image && (
+            <Badge className={getStatusColor(project.status)} variant="outline">
+              {project.status.replace("-", " ")}
+            </Badge>
+          )}
         </div>
         <p className="text-sm text-muted-foreground">{project.client}</p>
       </CardHeader>
+
       <CardContent className="space-y-4">
-        {/* Progress */}
         {!isArchived && (
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -114,7 +133,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           </div>
         )}
 
-        {/* Project Details */}
         <div className="space-y-2 text-sm">
           <div className="flex items-center text-muted-foreground">
             <MapPin className="h-4 w-4 mr-2" />
@@ -138,7 +156,6 @@ export function ProjectCard({ project, onClick }: ProjectCardProps) {
           </div>
         </div>
 
-        {/* Type Badge */}
         <div className="pt-2">
           <Badge variant="secondary" className="text-xs">
             {project.type}

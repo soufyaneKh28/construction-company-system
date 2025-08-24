@@ -5,8 +5,34 @@ import { Sidebar } from "@/components/sidebar"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { ProjectsList } from "@/components/projects/projects-list"
 import { ProjectFilters } from "@/components/projects/project-filters"
+import { AddProjectModal } from "@/components/projects/add-project-modal"
 import { Button } from "@/components/ui/button"
 import { Plus, Download } from "lucide-react"
+
+const initialProjects = [
+  {
+    id: "1",
+    name: "Luxury Villa Complex",
+    client: "Ahmed Construction",
+    type: "Residential",
+    status: "in-progress",
+    progress: 68,
+    startDate: "2024-03-15",
+    endDate: "2024-12-20",
+    budget: 4500000,
+    spent: 2850000,
+    location: "Algiers, Algeria",
+    image: "/luxury-villa-construction-site-with-modern-archite.png",
+    phases: [
+      { name: "Foundation", status: "completed", progress: 100 },
+      { name: "Structure", status: "in-progress", progress: 75 },
+      { name: "Roofing", status: "pending", progress: 0 },
+      { name: "Finishing", status: "pending", progress: 0 },
+    ],
+    workers: ["Ahmed Benali", "Fatima Khelil", "Omar Mansouri", "Leila Boumediene"],
+    documents: ["Contract.pdf", "Blueprints.dwg", "Site_Photos.zip"],
+  },
+]
 
 export default function ProjectsPage() {
   const [activeTab, setActiveTab] = useState<"active" | "archived">("active")
@@ -17,6 +43,11 @@ export default function ProjectsPage() {
     year: "",
     status: "",
   })
+  const [projects, setProjects] = useState(initialProjects)
+
+  const handleAddProject = (newProject: any) => {
+    setProjects((prev) => [newProject, ...prev])
+  }
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -35,10 +66,12 @@ export default function ProjectsPage() {
                 <Download className="h-4 w-4 mr-2" />
                 Export Report
               </Button>
-              <Button size="sm">
-                <Plus className="h-4 w-4 mr-2" />
-                New Project
-              </Button>
+              <AddProjectModal onAddProject={handleAddProject}>
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Project
+                </Button>
+              </AddProjectModal>
             </div>
           </div>
 
@@ -70,7 +103,7 @@ export default function ProjectsPage() {
           <ProjectFilters filters={filters} onFiltersChange={setFilters} />
 
           {/* Projects List */}
-          <ProjectsList activeTab={activeTab} filters={filters} />
+          <ProjectsList activeTab={activeTab} filters={filters} projects={projects} onProjectsChange={setProjects} />
         </div>
       </main>
     </div>
